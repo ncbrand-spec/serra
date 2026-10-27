@@ -1,5 +1,5 @@
 // Tiene la Serra sul telefono per aprirla anche senza rete. Il numero di VERSIONE lo cambia la pubblicazione.
-const VERSIONE = 'serra-202610271317';
+const VERSIONE = 'serra-202610272200';
 const FILE = ['./', 'index.html', 'telefono.css', 'telefono.js', 'lucchetto.js', 'regole.js', 'piante.js', 'chiave.cifrata.json',
   'manifest.webmanifest', 'icone/icona-180.png', 'icone/icona-192.png', 'icone/icona-512.png', 'icone/monogramma.png'];
 const CARATTERI = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];

@@ -20,6 +20,13 @@ const adesso = () => {
 const perPos = (a, b) => a.pos - b.pos;
 function tocca(s) { s.modificata = adesso(); }
 
+// Fatta o di nuovo da fare, col momento in cui è stata fatta: servono ai numeri della Serra viva.
+function cambiaFatta(s, si) {
+  s.fatta = si;
+  if (si) s.fattaIl = adesso(); else delete s.fattaIl;
+  tocca(s);
+}
+
 function posTra(prima, dopo) {
   if (prima == null && dopo == null) return PASSO;
   if (prima == null) return dopo / 2;

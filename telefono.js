@@ -255,9 +255,8 @@
   function segnaFatta(b, s) {
     if (!s.fatta && s.ripeti) {
       const nuova = prossimaVolta(s);
-      s.fatta = true;
       s.archiviata = true;
-      tocca(s);
+      cambiaFatta(s, true);
       doc(b).schede.push(nuova);
       if (T.aperta && T.aperta.id === s.id) T.aperta.id = nuova.id;
       salva(b);
@@ -266,17 +265,15 @@
       const quando = testoData(nuova.scadenza).replace(/^(Oggi|Domani)/, (m) => m.toLowerCase());
       avviso(`Fatta! Torna ${/^\d/.test(quando) ? 'il ' + quando : quando}.`, () => {
         doc(b).schede = doc(b).schede.filter((x) => x.id !== nuova.id);
-        s.fatta = false;
         s.archiviata = false;
-        tocca(s);
+        cambiaFatta(s, false);
         if (T.aperta && T.aperta.id === nuova.id) T.aperta.id = s.id;
         salva(b);
         disegna();
       });
       return;
     }
-    s.fatta = !s.fatta;
-    tocca(s);
+    cambiaFatta(s, !s.fatta);
     salva(b);
     disegna();
     if (T.aperta) disegnaFoglio();

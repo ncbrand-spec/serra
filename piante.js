@@ -424,6 +424,156 @@
     },
   };
 
+  // ---------- Le piante scelte da Natasha per la serra dell'anno (27/10/2026) ----------
+
+  // Macchie di un altro colore dentro una foglia (le variegate): restano dentro il contorno.
+  function macchie(geo, posto, colore, seme, quante, grand) {
+    const c = trasforma(geo.contorno, posto);
+    const xs = c.map((p) => p.x), ys = c.map((p) => p.y);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    const rnd = caso(seme), id = `clip-macchie-${++contaClip}`;
+    let e = '';
+    for (let i = 0; i < quante; i++) {
+      const cx = x0 + rnd() * (x1 - x0), cy = y0 + rnd() * (y1 - y0);
+      const rx = (x1 - x0) * grand * (0.45 + rnd() * 0.55), ry = rx * (0.35 + rnd() * 0.45);
+      e += `<ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" transform="rotate(${(rnd() * 180).toFixed(0)} ${cx.toFixed(1)} ${cy.toFixed(1)})"/>`;
+    }
+    return `<clipPath id="${id}"><path d="${d(c, true)}"/></clipPath><g clip-path="url(#${id})" fill="${colore}">${e}</g>`;
+  }
+
+  Object.assign(SPECIE, {
+    // Philodendron «Pink Princess»: foglie a cuore quasi nere con le macchie rosa confetto, i piccioli rossi.
+    'pink-princess': {
+      box: '0 0 240 300',
+      disegna(o) {
+        const col = { foglia: '#26302a', vena: '#4a5a4e', spessoreVena: 1.4 };
+        const terra = pt(120, 226);
+        const foglie = [
+          { posto: { x: 120, y: 74, ang: -4, s: 74 }, rosa: [3, 5, 0.42] },
+          { posto: { x: 76, y: 112, ang: -40, s: 66 }, rosa: [8, 3, 0.36] },
+          { posto: { x: 166, y: 118, ang: 36, s: 62 }, rosa: [13, 6, 0.55] },
+          { posto: { x: 104, y: 160, ang: -18, s: 48 }, rosa: null },
+          { posto: { x: 146, y: 168, ang: 22, s: 44 }, rosa: [21, 4, 0.4] },
+        ];
+        let s = '';
+        for (const f of foglie) s += stelo([pt(terra.x + (f.posto.x - 120) * 0.1, terra.y), lerp(terra, pt(f.posto.x, f.posto.y), 0.5), pt(f.posto.x, f.posto.y)], o, '#8c3b4c', 2.4);
+        for (const f of foglie) {
+          const geo = cuore({ allung: 1.3, larg: 0.62 });
+          s += foglia(geo, f.posto, o, col);
+          if (o.stile !== 'linea' && f.rosa) s += macchie(geo, f.posto, '#f2a6c0', ...f.rosa);
+        }
+        return s + vaso(120, 224, 104, 70, o, VASI[o.vaso || 'crema']);
+      },
+    },
+
+    // Alocasia «Snow Pink»: foglie a freccia verdi spruzzate di bianco e rosa, piccioli rosa.
+    'snow-pink': {
+      box: '0 0 240 300',
+      disegna(o) {
+        const col = { foglia: '#3d6f52', vena: '#e9f0e3', spessoreVena: 1.8, spessoreLaterali: 1.1, opacitaLaterali: 0.7 };
+        const terra = pt(120, 226);
+        const foglie = [
+          { x: 122, y: 88, ang: 4, s: 88 }, { x: 76, y: 124, ang: -36, s: 78 }, { x: 168, y: 128, ang: 40, s: 72 },
+        ];
+        let s = '';
+        for (const f of foglie) s += stelo([pt(terra.x + (f.x - 120) * 0.1, terra.y), lerp(terra, pt(f.x, f.y), 0.5), pt(f.x, f.y)], o, '#e29bb0', 3);
+        foglie.forEach((f, i) => {
+          const geo = sagittata();
+          s += foglia(geo, f, o, col);
+          if (o.stile !== 'linea') s += macchie(geo, f, i === 1 ? '#f7dbe3' : '#f4efe6', 31 + i * 7, 9, 0.16);
+        });
+        return s + vaso(120, 224, 100, 70, o, VASI[o.vaso || 'malva']);
+      },
+    },
+
+    // Begonia «Black Forest»: un cespo basso di foglie tonde e asimmetriche, quasi nere, con l'orlo rubino.
+    'black-forest': {
+      box: '0 0 240 300',
+      disegna(o) {
+        const col = { foglia: '#241c21', vena: '#4f3f49', spessoreVena: 1.2, spessoreLaterali: 0.9, bordo: '#7a2a3e', spessoreBordo: 1.4 };
+        const terra = pt(120, 226);
+        const rnd = caso(41);
+        const foglie = [[-58, 150, 62], [-30, 128, 70], [-6, 118, 74], [20, 124, 72], [46, 140, 64], [70, 168, 52], [-80, 176, 50]];
+        let s = '';
+        const posti = foglie.map(([ang, y, sc]) => ({ x: terra.x + ang * 0.9, y, ang: ang * 0.9, s: sc + rnd() * 8 }));
+        for (const p of posti) s += stelo([pt(terra.x + (p.x - 120) * 0.15, terra.y), pt(p.x, p.y + 20), pt(p.x, p.y)], o, '#8a3044', 2.6);
+        posti.forEach((p, i) => {
+          const geo = lanceolata({ larg: 0.42, base: 0.55, piega: 0.08 * (i % 2 ? 1 : -1), asim: 0.32 * (i % 2 ? 1 : -1), punta: 0.75 });
+          s += foglia(geo, p, o, col);
+        });
+        return s + vaso(120, 224, 110, 70, o, VASI[o.vaso || 'terracotta']);
+      },
+    },
+
+    // Alocasia «Regal Shield»: scudi enormi, verde scurissimo con le nervature chiare e il rovescio viola.
+    'regal-shield': {
+      box: '0 0 240 300',
+      disegna(o) {
+        const col = { foglia: '#1f3129', vena: '#9cbf96', spessoreVena: 2.2, spessoreLaterali: 1.4, bordo: '#3b2a3f', spessoreBordo: 1.2 };
+        const terra = pt(120, 226);
+        const foglie = [{ x: 126, y: 74, ang: 8, s: 104 }, { x: 66, y: 112, ang: -38, s: 94 }];
+        const rovescio = { x: 176, y: 120, ang: 44, s: 86 };
+        let s = '';
+        for (const f of [...foglie, rovescio]) s += stelo([pt(terra.x + (f.x - 120) * 0.08, terra.y), lerp(terra, pt(f.x, f.y), 0.5), pt(f.x, f.y)], o, '#4a3a44', 3.4);
+        s += foglia(sagittata(), rovescio, o, o.stile === 'linea' ? col : { ...col, foglia: '#4a2c4f', vena: '#c7a6c9' });
+        for (const f of foglie) s += foglia(sagittata(), f, o, col);
+        return s + vaso(120, 224, 110, 70, o, VASI[o.vaso || 'verde']);
+      },
+    },
+
+    // Ibisco: un arbusto con le foglie dentellate e tre fiori rossi a cinque petali, il pistillo giallo.
+    ibisco: {
+      box: '0 0 240 300',
+      disegna(o) {
+        const rnd = caso(57);
+        const col = { foglia: '#3f7a3c', vena: '#7fae6a', spessoreVena: 1.1, lateraliInLinea: false };
+        let s = '';
+        const rami = [[pt(112, 226), pt(84, 70)], [pt(124, 226), pt(160, 64)], [pt(118, 226), pt(122, 46)]];
+        for (const [a, b] of rami) s += stelo([a, lerp(a, b, 0.5), b], o, '#7a5a3e', 3);
+        for (let i = 0; i < 20; i++) {
+          const [a, b] = rami[i % 3];
+          const k = 0.3 + rnd() * 0.7, n = lerp(a, b, k), lato = i % 2 ? 1 : -1;
+          s += foglia(lanceolata({ larg: 0.32, base: 0.7, piega: 0.1 * lato }), { x: n.x, y: n.y, ang: lato * (50 + rnd() * 40), s: 34 + rnd() * 12 }, o, col);
+        }
+        for (const c of [pt(86, 76), pt(158, 70), pt(124, 112)]) {
+          for (let k = 0; k < 5; k++) {
+            const a = (k / 5) * 360 + 18;
+            s += o.stile === 'linea'
+              ? `<ellipse cx="${c.x}" cy="${c.y - 11}" rx="9" ry="12" transform="rotate(${a} ${c.x} ${c.y})" ${stileTratto(o)}/>`
+              : `<ellipse cx="${c.x}" cy="${c.y - 11}" rx="9" ry="12.5" transform="rotate(${a} ${c.x} ${c.y})" fill="#d0283c"/>`;
+          }
+          if (o.stile !== 'linea') s += `<circle cx="${c.x}" cy="${c.y}" r="5" fill="#8f1233"/>`;
+          s += stelo([pt(c.x, c.y), pt(c.x + 8, c.y - 16)], o, '#f2d36b', 1.6);
+          if (o.stile !== 'linea') s += `<circle cx="${c.x + 8}" cy="${c.y - 17}" r="2.6" fill="#fec340"/>`;
+        }
+        return s + vaso(120, 224, 104, 70, o, VASI[o.vaso || 'terracotta']);
+      },
+    },
+
+    // Ficus elastica «Tineke»: un fusto dritto con foglie ovali lucide, l'orlo crema e la nervatura rosa.
+    tineke: {
+      box: '0 0 240 300',
+      disegna(o) {
+        const terra = pt(120, 226);
+        let s = stelo([terra, pt(118, 150), pt(121, 70)], o, '#6e6a50', 4);
+        // poche foglie ben distanziate, quasi orizzontali come nel ficus vero; l'orlo crema gira tutto intorno
+        const foglie = [[194, -1, 82, 1], [162, 1, 78, 0.95], [130, -1, 70, 0.9], [102, 1, 60, 0.85], [80, -1, 46, 0.8]];
+        for (const [y, lato, lung, k] of foglie) {
+          const posto = { x: 120, y, ang: lato * (64 + (1 - k) * 40), s: lung };
+          const geo = lanceolata({ larg: 0.3, base: 0.85, piega: -0.06 * lato, punta: 0.8 });
+          if (o.stile === 'linea') { s += foglia(geo, posto, o, {}); continue; }
+          s += foglia(geo, posto, o, { foglia: '#efe4c4' });
+          const dentro = { ...posto, s: lung * 0.9 };
+          const geoDentro = lanceolata({ larg: 0.22, base: 0.85, piega: -0.06 * lato, punta: 0.8 });
+          s += foglia(geoDentro, dentro, o, { foglia: '#5b7f5a', vena: '#d98fa2', spessoreVena: 1.4 });
+          s += macchie(geoDentro, dentro, '#93ad87', y, 3, 0.25);
+        }
+        s += `<path d="M121 70q2-14 0-24" fill="none" stroke="${o.stile === 'linea' ? o.colore : '#c9566e'}" stroke-width="2.6" stroke-linecap="round"/>`;
+        return s + vaso(120, 224, 100, 70, o, VASI[o.vaso || 'giallo']);
+      },
+    },
+  });
+
   // Germoglio: due foglioline su un gambo. È il segno di «Nuova app»: un'app che nasce.
   SPECIE.germoglio = {
     box: '0 0 100 140',
