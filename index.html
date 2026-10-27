@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Serra</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fff0d8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="La Serra">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icone/icona-180.png">
+<link rel="icon" type="image/png" href="icone/icona-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" crossorigin>
+<link rel="stylesheet" href="telefono.css">
+</head>
+<body class="chiusa">
+
+<form id="lucchetto" hidden autocomplete="on">
+  <img src="icone/icona-180.png" alt="" width="96" height="96">
+  <h1>La Serra <span>di Natasha</span></h1>
+  <p>Scrivi la password per aprire. Su questo telefono si chiede una volta sola.</p>
+  <input class="nascosto" type="text" name="utente" autocomplete="username" value="serra" tabindex="-1" aria-hidden="true">
+  <label class="nascosto" for="password">Password</label>
+  <input id="password" type="password" name="password" autocomplete="current-password" placeholder="Password" required>
+  <button class="bottone pieno largo">Apri</button>
+  <p class="errore" role="alert"></p>
+</form>
+
+<div id="app" hidden>
+  <header class="testa">
+    <svg class="appesa" data-pianta="filodendro" data-stile="colore" data-vaso="crema" data-appeso="si"></svg>
+    <div class="marchio"><img src="icone/monogramma.png" alt=""><span>La Serra</span></div>
+    <div class="giorno-sett" id="giorno-sett"></div>
+    <div class="data-grande"><span class="sottolineato" id="data"></span></div>
+    <p class="saluto" id="saluto"></p>
+    <p class="rete" id="rete" hidden></p>
+  </header>
+
+  <main id="vista"></main>
+
+  <nav class="schede-basso" aria-label="Sezioni">
+    <button type="button" data-vista="oggi" class="attiva">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Oggi</span></button>
+    <button type="button" data-vista="mie">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.4l2.6 2.6 5-5.2"/></svg><span>Le mie cose</span></button>
+    <button type="button" data-vista="clienti">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19.5c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9.5" r="2.5"/><path d="M15.8 14.6c2.3.1 4 1.6 4.7 4.4"/></svg><span>Clienti</span></button>
+  </nav>
+</div>
+
+<dialog class="foglio" id="foglio" aria-label="Scheda"></dialog>
+<div class="avviso" id="avviso" role="status" hidden></div>
+
+<script src="piante.js"></script>
+<script src="regole.js"></script>
+<script src="lucchetto.js"></script>
+</body>
+</html>
